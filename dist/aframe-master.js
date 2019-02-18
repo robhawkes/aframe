@@ -65037,7 +65037,8 @@ module.exports.Component = registerComponent('look-controls', {
     pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false},
     reverseTouchDrag: {default: false},
-    touchEnabled: {default: true}
+    touchEnabled: {default: true},
+    gyroEnabled: {default: true}
   },
 
   init: function () {
@@ -65230,8 +65231,13 @@ module.exports.Component = registerComponent('look-controls', {
       hmdEuler.setFromQuaternion(this.polyfillObject.quaternion, 'YXZ');
 
       // On mobile, do camera rotation with touch events and sensors.
-      object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
-      object3D.rotation.y = hmdEuler.y + yawObject.rotation.y;
+      if (this.data.gyroEnabled) {
+        object3D.rotation.y = hmdEuler.y + yawObject.rotation.y;
+        object3D.rotation.x = hmdEuler.x + pitchObject.rotation.x;
+      } else {
+        object3D.rotation.x = pitchObject.rotation.x;
+        object3D.rotation.y = yawObject.rotation.y;
+      }
     };
   })(),
 
@@ -75526,7 +75532,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2019-02-06, Commit #85e66359)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-02-18, Commit #18261b3f)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
